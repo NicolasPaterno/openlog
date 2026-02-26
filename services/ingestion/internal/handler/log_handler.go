@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jackc/pgx/v5/pgtype"
 
 	"github.com/openlog/ingestion/db/sqlc"
 	"github.com/openlog/ingestion/internal/model"
@@ -47,13 +46,10 @@ func (h *LogHandler) CreateLog(c *gin.Context) {
 	defer cancel()
 
 	log, err := h.queries.InsertLog(ctx, sqlc.InsertLogParams{
-		Source:  req.Source,
-		Level:   req.Level,
-		Message: req.Message,
-		Metadata: pgtype.JSONB{
-			Bytes: metadataBytes,
-			Valid: true,
-		},
+		Source:   req.Source,
+		Level:    req.Level,
+		Message:  req.Message,
+		Metadata: metadataBytes,
 	})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, model.ErrorResponse{
@@ -144,8 +140,8 @@ func (h *LogHandler) ListLogs(c *gin.Context) {
 
 func toLogResponse(l sqlc.Log) model.LogResponse {
 	var metadata map[string]interface{}
-	if l.Metadata.Valid {
-		_ = json.Unmarshal(l.Metadata.Bytes, &metadata)
+	if len(l.Metadata) > 0 {
+		_ = json.Unmarshal(l.Metadata, &metadata)
 	}
 
 	return model.LogResponse{

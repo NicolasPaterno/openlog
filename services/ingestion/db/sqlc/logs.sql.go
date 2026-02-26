@@ -4,8 +4,6 @@ package sqlc
 
 import (
 	"context"
-
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const insertLog = `-- name: InsertLog :one
@@ -15,10 +13,10 @@ RETURNING id, source, level, message, metadata, created_at
 `
 
 type InsertLogParams struct {
-	Source   string       `json:"source"`
-	Level    string       `json:"level"`
-	Message  string       `json:"message"`
-	Metadata pgtype.JSONB `json:"metadata"`
+	Source   string `json:"source"`
+	Level    string `json:"level"`
+	Message  string `json:"message"`
+	Metadata []byte `json:"metadata"`
 }
 
 func (q *Queries) InsertLog(ctx context.Context, arg InsertLogParams) (Log, error) {

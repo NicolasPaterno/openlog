@@ -9,22 +9,22 @@ import (
 )
 
 type Log struct {
-	ID        int64              `json:"id"`
-	Source    string             `json:"source"`
-	Level     string             `json:"level"`
-	Message   string             `json:"message"`
-	Metadata  pgtype.JSONB       `json:"metadata"`
-	CreatedAt time.Time          `json:"created_at"`
+	ID        int64     `json:"id"`
+	Source    string    `json:"source"`
+	Level     string    `json:"level"`
+	Message   string    `json:"message"`
+	Metadata  []byte    `json:"metadata"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type Diagnostic struct {
-	ID         int64              `json:"id"`
-	LogID      int64              `json:"log_id"`
-	Summary    string             `json:"summary"`
-	Severity   string             `json:"severity"`
-	Suggestion pgtype.Text        `json:"suggestion"`
-	ModelUsed  pgtype.Text        `json:"model_used"`
-	TokensUsed pgtype.Int4        `json:"tokens_used"`
-	CreatedAt  time.Time          `json:"created_at"`
-	UpdatedAt  time.Time          `json:"updated_at"`
+	ID         int64       `json:"id"`
+	LogID      int64       `json:"log_id"`
+	Summary    string      `json:"summary"`
+	Severity   string      `json:"severity"`
+	Suggestion pgtype.Text `json:"suggestion"`
+	ModelUsed  pgtype.Text `json:"model_used"`
+	TokensUsed pgtype.Int4 `json:"tokens_used"`
+	CreatedAt  time.Time   `json:"created_at"`
+	UpdatedAt  time.Time   `json:"updated_at"`
 }
