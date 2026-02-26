@@ -1,9 +1,12 @@
-.PHONY: up down logs ps restart health clean
+.PHONY: up down logs ps restart health clean build
 
 ## ---------- Infra ----------
 
-up: ## Sobe todos os servicos de infra
+up: ## Sobe todos os servicos (infra + aplicacao)
 	docker compose up -d
+
+up-infra: ## Sobe apenas infra (postgres, rabbitmq, redis)
+	docker compose up -d postgres rabbitmq redis
 
 down: ## Para todos os containers
 	docker compose down
@@ -23,13 +26,24 @@ health: ## Mostra o health status de cada container
 clean: ## Remove containers, volumes e imagens orfas
 	docker compose down -v --remove-orphans
 
+build: ## Rebuild das imagens dos servicos
+	docker compose build
+
 ## ---------- Database ----------
 
-migrate-up: ## Executa migrations pendentes
-	@echo "TODO: implementar na proxima fase"
+migrate-up: ## Executa migrations pendentes via Docker
+	docker compose run --rm migrate
 
-migrate-down: ## Reverte a ultima migration
-	@echo "TODO: implementar na proxima fase"
+migrate-down: ## Reverte a ultima migration via Docker
+	docker compose run --rm migrate down
+
+migrate-status: ## Mostra status das migrations
+	docker compose run --rm migrate status
+
+## ---------- Ingestion ----------
+
+logs-ingestion: ## Logs apenas do servico de ingestao
+	docker compose logs -f ingestion
 
 ## ---------- Help ----------
 
