@@ -1,4 +1,4 @@
-.PHONY: up down logs ps restart health clean build
+.PHONY: up down logs ps restart health clean build logs-worker ollama-pull
 
 ## ---------- Infra ----------
 
@@ -44,6 +44,14 @@ migrate-status: ## Mostra status das migrations
 
 logs-ingestion: ## Logs apenas do servico de ingestao
 	docker compose logs -f ingestion
+
+## ---------- AI Worker ----------
+
+logs-worker: ## Logs apenas do AI Worker
+	docker compose logs -f ai-worker
+
+ollama-pull: ## Baixa modelo no Ollama (ex: make ollama-pull MODEL=llama3.2)
+	docker exec -it openlog-ollama ollama pull $(or $(MODEL),llama3.2)
 
 ## ---------- Help ----------
 

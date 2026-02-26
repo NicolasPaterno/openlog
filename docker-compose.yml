@@ -94,10 +94,44 @@ services:
     networks:
       - backend
 
+  ollama:
+    image: ollama/ollama:latest
+    container_name: openlog-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - backend
+
+  ai-worker:
+    build:
+      context: ./services/ai-worker
+      dockerfile: Dockerfile
+    container_name: openlog-ai-worker
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: "postgres://${POSTGRES_USER:-openlog}:${POSTGRES_PASSWORD:-openlog_secret}@postgres:5432/${POSTGRES_DB:-openlog}?sslmode=disable"
+      RABBITMQ_URL: "amqp://${RABBITMQ_USER:-openlog}:${RABBITMQ_PASSWORD:-openlog_secret}@rabbitmq:5672/"
+      LLM_PROVIDER: ${LLM_PROVIDER:-ollama}
+      LLM_MODEL: ${LLM_MODEL:-llama3.2}
+      OLLAMA_BASE_URL: http://ollama:11434
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - backend
+
 volumes:
   postgres_data:
   rabbitmq_data:
   redis_data:
+  ollama_data:
 
 networks:
   backend:
