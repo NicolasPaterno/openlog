@@ -1,4 +1,4 @@
-.PHONY: up down logs ps restart health clean build logs-worker ollama-pull
+.PHONY: up down logs ps restart health clean build logs-worker ollama-pull logs-dashboard
 
 ## ---------- Infra ----------
 
@@ -52,6 +52,11 @@ logs-worker: ## Logs apenas do AI Worker
 
 ollama-pull: ## Baixa modelo no Ollama (ex: make ollama-pull MODEL=llama3.2)
 	docker exec -it openlog-ollama ollama pull $(or $(MODEL),llama3.2)
+
+## ---------- Dashboard ----------
+
+logs-dashboard: ## Logs apenas do Dashboard
+	docker compose logs -f dashboard
 
 ## ---------- Help ----------
 

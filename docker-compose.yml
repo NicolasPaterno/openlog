@@ -127,6 +127,24 @@ services:
     networks:
       - backend
 
+  dashboard:
+    build:
+      context: ./services/dashboard
+      dockerfile: Dockerfile
+    container_name: openlog-dashboard
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-openlog}:${POSTGRES_PASSWORD:-openlog_secret}@postgres:5432/${POSTGRES_DB:-openlog}?sslmode=disable"
+    ports:
+      - "${DASHBOARD_PORT:-3000}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - backend
+
 volumes:
   postgres_data:
   rabbitmq_data:
