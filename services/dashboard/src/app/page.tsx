@@ -4,8 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { SeverityPieChart } from "@/components/charts/severity-pie-chart";
 import { LogsBarChart } from "@/components/charts/logs-bar-chart";
 import { severityColor, formatDate, serializeBigInt } from "@/lib/utils";
-import { AlertTriangle, ShieldAlert, ShieldCheck, Flame } from "lucide-react";
+import { AlertTriangle, ShieldAlert, ShieldCheck, Flame, Plus } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export const dynamic = "force-dynamic";
 
@@ -82,11 +83,19 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-        <p className="text-muted-foreground">
-          {totals.totalLogs} logs ingeridos, {totals.totalDiagnostics} diagnosticos gerados
-        </p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+          <p className="text-muted-foreground">
+            {totals.totalLogs} logs ingeridos, {totals.totalDiagnostics} diagnosticos gerados
+          </p>
+        </div>
+        <Button asChild>
+          <Link href="/enviar-log">
+            <Plus className="mr-2 h-4 w-4" />
+            Adicionar Log
+          </Link>
+        </Button>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

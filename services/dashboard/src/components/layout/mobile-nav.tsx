@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Menu, Activity, LayoutDashboard, List, BarChart3 } from "lucide-react";
+import { Menu, Activity, LayoutDashboard, List, BarChart3, PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/logs", label: "Logs", icon: List },
+  { href: "/enviar-log", label: "Enviar Log", icon: PlusCircle },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
 ];
 
