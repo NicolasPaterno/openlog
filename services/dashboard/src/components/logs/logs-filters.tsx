@@ -45,7 +45,7 @@ export function LogsFilters() {
   return (
     <div className="flex flex-wrap items-center gap-3">
       <Input
-        placeholder="Buscar por mensagem..."
+        placeholder="Search by message..."
         defaultValue={currentSearch}
         onChange={(e) => {
           const timer = setTimeout(() => updateParam("search", e.target.value), 400);
@@ -70,7 +70,7 @@ export function LogsFilters() {
       </Select>
       {hasFilters && (
         <Button variant="ghost" size="sm" onClick={clearFilters}>
-          <X className="mr-1 h-4 w-4" /> Limpar
+          <X className="mr-1 h-4 w-4" /> Clear
         </Button>
       )}
     </div>
