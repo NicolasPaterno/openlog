@@ -45,11 +45,11 @@ export function LogsBarChart({ data }: { data: DailyData[] }) {
       <AreaChart data={formatted}>
         <defs>
           <linearGradient id="logGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="hsl(var(--chart-1))" stopOpacity={0.3} />
-            <stop offset="100%" stopColor="hsl(var(--chart-1))" stopOpacity={0.02} />
+            <stop offset="0%" stopColor="hsl(var(--chart-1))" stopOpacity={0.4} />
+            <stop offset="100%" stopColor="hsl(var(--chart-1))" stopOpacity={0.05} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted-foreground) / 0.15)" vertical={false} />
         <XAxis
           dataKey="date"
           stroke="hsl(var(--muted-foreground))"

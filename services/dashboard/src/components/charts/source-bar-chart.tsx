@@ -56,7 +56,7 @@ export function SourceBarChart({ data }: { data: SourceData[] }) {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <BarChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted-foreground) / 0.15)" vertical={false} />
         <XAxis
           dataKey="source"
           stroke="hsl(var(--muted-foreground))"
