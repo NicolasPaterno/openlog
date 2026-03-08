@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "OpenLog - IA-Ops Log Analyzer",
-  description: "Dashboard de observabilidade com analise de logs por IA",
+  title: "OpenLog - AI-Ops Log Analyzer",
+  description: "Observability dashboard with AI-powered log analysis",
 };
 
 export default function RootLayout({
@@ -25,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className="dark">
+    <html lang="en" className="dark">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -33,8 +33,10 @@ export default function RootLayout({
           <Sidebar />
           <div className="flex flex-1 flex-col overflow-hidden">
             <Header />
-            <main className="flex-1 overflow-y-auto p-6 md:p-8">
-              {children}
+            <main className="flex-1 overflow-y-auto">
+              <div className="mx-auto max-w-7xl p-6 md:p-8 lg:p-10">
+                {children}
+              </div>
             </main>
           </div>
         </div>

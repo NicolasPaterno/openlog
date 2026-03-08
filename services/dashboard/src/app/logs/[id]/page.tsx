@@ -1,11 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LogLevelBadge } from "@/components/logs/log-level-badge";
-import { severityColor, formatDate } from "@/lib/utils";
-import { ArrowLeft, Clock, Brain } from "lucide-react";
+import { DiagnosticPanel } from "@/components/logs/diagnostic-panel";
+import { formatDate } from "@/lib/utils";
+import { ArrowLeft, Brain, Terminal } from "lucide-react";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -54,96 +54,66 @@ export default async function LogDetailPage({ params }: PageProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" asChild>
+        <Button variant="ghost" size="icon" asChild className="h-8 w-8 rounded-lg">
           <Link href="/logs">
             <ArrowLeft className="h-4 w-4" />
           </Link>
         </Button>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            Log #{Number(log.id)}
+          <h1 className="text-2xl font-bold tracking-tight">
+            Log <span className="font-mono text-primary">#{Number(log.id)}</span>
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-xs tabular-nums text-muted-foreground">
             {formatDate(log.created_at)}
           </p>
         </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
+        <Card className="transition-shadow hover:shadow-md">
           <CardHeader>
-            <CardTitle>Detalhes do Log</CardTitle>
+            <CardTitle className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+              <Terminal className="h-4 w-4" />
+              Log Details
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-muted-foreground">Source</p>
-                <p className="font-medium">{log.source}</p>
+                <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Source</p>
+                <p className="mt-1 font-medium font-mono text-sm">{log.source}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Level</p>
-                <LogLevelBadge level={log.level} />
+                <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Level</p>
+                <div className="mt-1">
+                  <LogLevelBadge level={log.level} />
+                </div>
               </div>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Mensagem</p>
-              <p className="mt-1 rounded-md bg-muted p-3 font-mono text-sm">
+              <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Message</p>
+              <p className="mt-1.5 rounded-lg bg-muted/50 p-3 font-mono text-sm leading-relaxed">
                 {log.message}
               </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Metadata</p>
-              <pre className="mt-1 overflow-x-auto rounded-md bg-muted p-3 text-xs">
+              <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Metadata</p>
+              <pre className="mt-1.5 overflow-x-auto rounded-lg bg-muted/50 p-3 font-mono text-xs leading-relaxed">
                 {JSON.stringify(log.metadata, null, 2)}
               </pre>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="transition-shadow hover:shadow-md">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Brain className="h-5 w-5" />
-              Diagnostico IA
+            <CardTitle className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+              <Brain className="h-4 w-4" />
+              AI Diagnostic
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {diagnostic ? (
-              <div className="space-y-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Severidade</p>
-                  <Badge className={severityColor(diagnostic.severity) + " mt-1"}>
-                    {diagnostic.severity}
-                  </Badge>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Resumo</p>
-                  <p className="mt-1">{diagnostic.summary}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Sugestao</p>
-                  <p className="mt-1 rounded-md bg-muted p-3 text-sm">
-                    {diagnostic.suggestion ?? "Sem sugestao"}
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 gap-4 pt-2 border-t border-border">
-                  <div>
-                    <p className="text-xs text-muted-foreground">Modelo</p>
-                    <p className="text-sm font-mono">{diagnostic.model_used}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Analisado em</p>
-                    <p className="text-sm">{formatDate(diagnostic.created_at)}</p>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-                <Clock className="mb-3 h-10 w-10" />
-                <p className="text-lg font-medium">Aguardando analise...</p>
-                <p className="text-sm">O AI Worker esta processando este log.</p>
-              </div>
-            )}
+            <DiagnosticPanel logId={Number(log.id)} initial={diagnostic} />
           </CardContent>
         </Card>
       </div>

@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
+import { Loader2, Send } from "lucide-react";
 
 const LEVELS = ["DEBUG", "INFO", "WARN", "ERROR", "FATAL"];
 
@@ -37,7 +37,7 @@ export function LogForm() {
       try {
         metadata = JSON.parse(metadataStr);
       } catch {
-        setError("Metadata invalido. Use JSON valido (ex: {\"key\": \"value\"})");
+        setError("Invalid metadata. Use valid JSON (e.g. {\"key\": \"value\"})");
         setLoading(false);
         return;
       }
@@ -67,28 +67,29 @@ export function LogForm() {
       router.push(`/logs/${data.id}`);
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Falha ao enviar. Verifique se a API esta rodando.");
+      setError(err instanceof Error ? err.message : "Failed to send. Check if the API is running.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-5">
       <div>
-        <label htmlFor="source" className="mb-2 block text-sm font-medium">
+        <label htmlFor="source" className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
           Source
         </label>
         <Input
           id="source"
           name="source"
           placeholder="Ex: api-gateway, user-service"
+          className="font-mono text-sm"
           required
         />
       </div>
 
       <div>
-        <label htmlFor="level" className="mb-2 block text-sm font-medium">
+        <label htmlFor="level" className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
           Level
         </label>
         <Select value={level} onValueChange={setLevel} required>
@@ -106,8 +107,8 @@ export function LogForm() {
       </div>
 
       <div>
-        <label htmlFor="message" className="mb-2 block text-sm font-medium">
-          Mensagem
+        <label htmlFor="message" className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+          Message
         </label>
         <Input
           id="message"
@@ -118,7 +119,7 @@ export function LogForm() {
       </div>
 
       <div>
-        <label htmlFor="metadata" className="mb-2 block text-sm font-medium">
+        <label htmlFor="metadata" className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
           Metadata (JSON) — opcional
         </label>
         <Input
@@ -130,19 +131,22 @@ export function LogForm() {
       </div>
 
       {error && (
-        <p className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-          {error}
-        </p>
+        <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3">
+          <p className="text-sm text-destructive">{error}</p>
+        </div>
       )}
 
-      <Button type="submit" disabled={loading}>
+      <Button type="submit" disabled={loading} className="w-full rounded-lg">
         {loading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Enviando...
+            Sending...
           </>
         ) : (
-          "Enviar para Analise"
+          <>
+            <Send className="mr-2 h-4 w-4" />
+            Submit for Analysis
+          </>
         )}
       </Button>
     </form>

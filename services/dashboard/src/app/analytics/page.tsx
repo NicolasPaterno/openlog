@@ -4,6 +4,7 @@ import { LogsTimelineChart } from "@/components/charts/logs-timeline-chart";
 import { SourceBarChart } from "@/components/charts/source-bar-chart";
 import { Badge } from "@/components/ui/badge";
 import { levelColor } from "@/lib/utils";
+import { Clock, Zap, AlertCircle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -93,65 +94,117 @@ export default async function AnalyticsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Analytics</h1>
-        <p className="text-muted-foreground">Metricas e tendencias dos logs</p>
+        <h1 className="text-2xl font-bold tracking-tight">Analytics</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Metrics and trends from your logs
+        </p>
       </div>
 
-      {avgTime !== null && (
-        <Card>
-          <CardContent className="flex items-center gap-4 py-6">
-            <div className="rounded-full bg-primary/10 p-3">
-              <span className="text-2xl font-bold text-primary">{avgTime}s</span>
+      {/* Metric cards row */}
+      <div className="grid gap-4 sm:grid-cols-3">
+        {avgTime !== null && (
+          <Card className="stat-glow-green transition-all duration-200 hover:translate-y-[-1px] hover:shadow-md">
+            <CardContent className="flex items-center gap-4 py-5">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-500/10">
+                <Zap className="h-5 w-5 text-green-500" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold tabular-nums">{avgTime}s</p>
+                <p className="text-xs text-muted-foreground">Avg. analysis time</p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+        <Card className="stat-glow-yellow transition-all duration-200 hover:translate-y-[-1px] hover:shadow-md">
+          <CardContent className="flex items-center gap-4 py-5">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-yellow-500/10">
+              <Clock className="h-5 w-5 text-yellow-500" />
             </div>
             <div>
-              <p className="font-medium">Tempo medio de analise</p>
-              <p className="text-sm text-muted-foreground">
-                Do momento que o log e recebido ate o diagnostico ser gerado
-              </p>
+              <p className="text-2xl font-bold tabular-nums">{timeline.length}</p>
+              <p className="text-xs text-muted-foreground">Active days</p>
             </div>
           </CardContent>
         </Card>
-      )}
+        <Card className="stat-glow-red transition-all duration-200 hover:translate-y-[-1px] hover:shadow-md">
+          <CardContent className="flex items-center gap-4 py-5">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-500/10">
+              <AlertCircle className="h-5 w-5 text-red-500" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold tabular-nums">
+                {topErrors.reduce((s, e) => s + e.count, 0)}
+              </p>
+              <p className="text-xs text-muted-foreground">Total errors</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
-      <Card>
+      {/* Timeline chart */}
+      <Card className="transition-shadow hover:shadow-md">
         <CardHeader>
-          <CardTitle>Volume de Logs (30 dias)</CardTitle>
+          <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            Log Volume — 30 days
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <LogsTimelineChart data={timeline} />
         </CardContent>
       </Card>
 
+      {/* Bottom row */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
+        <Card className="transition-shadow hover:shadow-md">
           <CardHeader>
-            <CardTitle>Logs por Source e Level</CardTitle>
+            <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+              Logs by Source & Level
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <SourceBarChart data={sourceData as never[]} />
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="transition-shadow hover:shadow-md">
           <CardHeader>
-            <CardTitle>Top 5 Sources com Erros</CardTitle>
+            <CardTitle className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+              Top Error Sources
+            </CardTitle>
           </CardHeader>
           <CardContent>
             {topErrors.length === 0 ? (
-              <p className="py-8 text-center text-muted-foreground">Sem erros registrados</p>
+              <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
+                <AlertCircle className="mb-3 h-8 w-8 opacity-40" />
+                <p className="text-sm">No errors recorded</p>
+              </div>
             ) : (
-              <div className="space-y-3">
-                {topErrors.map((item, idx) => (
-                  <div key={item.source} className="flex items-center justify-between rounded-md border border-border p-3">
-                    <div className="flex items-center gap-3">
-                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-sm font-bold">
-                        {idx + 1}
-                      </span>
-                      <span className="font-medium">{item.source}</span>
+              <div className="space-y-2">
+                {topErrors.map((item, idx) => {
+                  const maxCount = topErrors[0].count;
+                  const pct = maxCount > 0 ? (item.count / maxCount) * 100 : 0;
+                  return (
+                    <div key={item.source} className="group rounded-lg border border-border/50 p-3 transition-all hover:border-primary/20 hover:bg-accent/50">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-3">
+                          <span className="flex h-6 w-6 items-center justify-center rounded-md bg-muted text-[11px] font-bold tabular-nums">
+                            {idx + 1}
+                          </span>
+                          <span className="text-sm font-medium font-mono">{item.source}</span>
+                        </div>
+                        <Badge className={levelColor("ERROR") + " text-[10px]"}>
+                          {item.count}
+                        </Badge>
+                      </div>
+                      <div className="h-1 w-full overflow-hidden rounded-full bg-muted">
+                        <div
+                          className="h-full rounded-full bg-red-500/60 transition-all duration-500"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
                     </div>
-                    <Badge className={levelColor("ERROR")}>{item.count} erros</Badge>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </CardContent>
