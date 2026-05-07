@@ -216,7 +216,6 @@ openlog/
 | `LLM_MODEL` | llama3.2 | Model name for the AI worker |
 | `OPENAI_API_KEY` | — | Required if using OpenAI provider |
 
----
 
 ## License
 
